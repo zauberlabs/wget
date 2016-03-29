@@ -784,6 +784,43 @@ name_allowed (const struct hash_table *ht, const char *b, const char *e)
   return hash_table_get (ht, copy) != NULL;
 }
 
+static void 
+print_tag(struct tagstack_item* h) 
+{
+  const char* c;
+  for (c = h->tagname_begin; c < h->tagname_end; c++) {
+    putchar(*c);
+  }
+  putchar('\n');
+}
+
+/* Return true there is an <script> up in the stack */
+static bool
+tags_is_child_of_script (struct tagstack_item *tail)
+{
+  struct tagstack_item *h = (tail == NULL) ? NULL : tail->prev;
+
+  while(h != NULL) {
+    if(6 == (h->tagname_end - h->tagname_begin)
+       && 's' == tolower(*(h->tagname_begin + 0))
+       && 'c' == tolower(*(h->tagname_begin + 1))
+       && 'r' == tolower(*(h->tagname_begin + 2))
+       && 'i' == tolower(*(h->tagname_begin + 3))
+       && 'p' == tolower(*(h->tagname_begin + 4))
+       && 't' == tolower(*(h->tagname_begin + 5))
+	 ) {
+       return true;
+    }
+    /* keep moving */
+    if(h == h->prev) {
+      h = NULL;
+    } else {
+      h = h->prev;
+    }
+  }
+  return false;
+}
+
 /* Advance P (a char pointer), with the explicit intent of being able
    to read the next character.  If this is not possible, go to finish.  */
 
@@ -1139,8 +1176,9 @@ map_html_tags (const char *text, int size,
               tagstack_pop (&head, &tail, ts);
             }
         }
-
-      mapfun (&taginfo, maparg);
+      if(!tags_is_child_of_script(tail)) {
+    	  mapfun (&taginfo, maparg);
+      }
       if (*p != '<')
         ADVANCE (p);
     }
