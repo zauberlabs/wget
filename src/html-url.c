@@ -672,6 +672,43 @@ tag_handle_meta (int tagid _GL_UNUSED, struct taginfo *tag, struct map_context *
             }
         }
     }
+    else if (name && (0 == c_strcasecmp (name, "twitter:image:main")
+                     |0 == c_strcasecmp (name, "twitter:image:src")
+                     |0 == c_strcasecmp (name, " twitter:image:unlocked:src")
+                     |0 == c_strcasecmp (name, "twitter:image:forward_image")
+                     |0 == c_strcasecmp (name, "twitter:image:player:src")
+                     |0 == c_strcasecmp (name, "twitter:image:unlocked:src")
+                     |0 == c_strcasecmp (name, "twitter:image:participated_image:src")
+                     |0 == c_strcasecmp (name, "twitter:image:image0:src")
+                     |0 == c_strcasecmp (name, "twitter:image:image1:src")
+                     |0 == c_strcasecmp (name, "twitter:image:image2:src")
+                     |0 == c_strcasecmp (name, "twitter:image:image3:src")
+                     |0 == c_strcasecmp (name, "twitter:image:image4:src")
+                     |0 == c_strcasecmp (name, "twitter:image:image5:src")
+                     |0 == c_strcasecmp (name, "twitter:image:image6:src")
+                     |0 == c_strcasecmp (name, "twitter:image:image7:src")
+                     |0 == c_strcasecmp (name, "twitter:image:image8:src")
+                     |0 == c_strcasecmp (name, "twitter:image:image9:src")
+                     |0 == c_strcasecmp (name, "twitter:image:imagefull0:src")
+                     |0 == c_strcasecmp (name, "twitter:image:imagefull1:src")
+                     |0 == c_strcasecmp (name, "twitter:image:imagefull2:src")
+                     |0 == c_strcasecmp (name, "twitter:image:imagefull3:src")
+                     |0 == c_strcasecmp (name, "twitter:image:imagefull4:src")
+                     |0 == c_strcasecmp (name, "twitter:image:imagefull5:src")
+                     |0 == c_strcasecmp (name, "twitter:image:imagefull6:src")
+                     |0 == c_strcasecmp (name, "twitter:image:imagefull8:src")
+                     |0 == c_strcasecmp (name, "twitter:image:imagefull9:src")
+                     ) )
+    {
+        int attrind = 0;
+        char *content = find_attr (tag, "content", &attrind);
+        if (!content)
+            return;
+        struct urlpos * up = append_url (content, ATTR_POS(tag, attrind, ctx),
+                     ATTR_SIZE(tag, attrind), ctx);
+        if (up)
+            up->link_inline_p = 1;
+    }
 }
 
 /* Dispatch the tag handler appropriate for the tag we're mapping
